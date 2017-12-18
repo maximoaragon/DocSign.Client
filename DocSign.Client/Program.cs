@@ -11,7 +11,7 @@ namespace DocSign.Client
     class Program
     {
         //static string _docSignApiURL = "http://js-ml-dev/docsign/";
-        static string _docSignApiURL = "http://showcase.equivant.com/docsign/";
+        static string _docSignApiURL = "https://showcase.equivant.com/docsign/";
         static string _docSignSharePath = @"\\js-ml-fs1\ShowCase\Images\DocSign\";
 
         static void Main(string[] args)
@@ -105,7 +105,7 @@ namespace DocSign.Client
 
         private static string CreateSignaturePackage(string testDocument)
         {
-            string docInDocSignPath =  _docSignSharePath + Guid.NewGuid().ToString() + ".docx"  ;
+            string docInDocSignPath =  _docSignSharePath + Guid.NewGuid().ToString() + ".docx";
             string jsonDocSignSharePath = docInDocSignPath.Replace(@"\", @"\\");
 
             if (!File.Exists(testDocument))
@@ -114,24 +114,24 @@ namespace DocSign.Client
                 return "";
             }
 
+            //Document can be pased as base64 in the FileData below
             string base64Doc = Convert.ToBase64String(File.ReadAllBytes( testDocument));
-
-            File.Copy(testDocument, docInDocSignPath, true);
+            //or copied to a share path
+            //File.Copy(testDocument, docInDocSignPath, true);
 
             string jsonData = "{ " +
                 "\"Documents\":[" +
                 "{" +
-                "   \"Name\":\"CRIMINAL-NOTICE OF HEARING\"," +
-                "   \"FilePath\":," +
+                "   \"Name\":\"Demo Document\"," +
+                "   \"FilePath\":null," +
                 "   \"ExternalID\":56884988," + //ContainerID
                 "   \"Pages\":1," +
                 "   \"Type\":null," +
-                "   \"FileData\": \"" + base64Doc + "\"," +
-                "   \"MetaData\":" +
-                "       \"{'ExternalID': 56884988}\"," +
+                "   \"FileData\": \"" + base64Doc + "\"," + //actual word document
+                "   \"MetaData\":\"{'ExternalID': 56884988}\"," + //this can be anything
                 "   \"Signatures\":[" +
                 "   {" +
-                "       \"SigneeID\":5434," +
+                "       \"SigneeID\":5434," + //5434 = docsigndemo user loginID
                 "       \"SigneeName\":\"Clerk Aragones, Maxuel\"," +
                 "       \"MediatorID\":5434," +
                 "       \"SignatureTemplate\":\"SC_Login_4979_DS\"," +
@@ -140,14 +140,14 @@ namespace DocSign.Client
                 "   {" +
                 "       \"SigneeID\":0," +
                 "       \"SigneeName\":\"Party #1 DEFENDANT BROWNING, JEFFERY LEON JR\"," +
-                "       \"MediatorID\":4979," +
-                "       \"SignatureTemplate\":\"SC_Party_7315604_DS\"," +
+                "       \"MediatorID\":5434," +
+                "       \"SignatureTemplate\":\"SC_Party_7315604_DS\"," + 
                 "       \"Type\":1," +
                 "       \"Storage\":0}]" +
                 "   }" +
                 "]," +
                 "   \"SignatureRoom\":\"#5 (South Branch)\"," +
-                "   \"PackageName\":\"Unit test package\"" +
+                "   \"PackageName\":\"Demo Package\"" +
                 "}";
 
 
